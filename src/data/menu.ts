@@ -20,7 +20,7 @@ export const menuItems: MenuItem[] = [
     name: "Grilled Lamb Kebabs",
     description: "Tender lamb marinated in Mediterranean spices, served with tzatziki sauce",
     price: 24.99,
-    image: "/images/food/grilled-lamb-kebabs.jpeg",
+    image: "/images/food/grilled-lamb-kebabs.jpg",
     category: "Main Course",
     nutritionalInfo: {
       calories: "450",
@@ -34,7 +34,7 @@ export const menuItems: MenuItem[] = [
     name: "Seafood Paella",
     description: "Authentic Spanish-style paella with shrimp, mussels, and saffron rice",
     price: 28.99,
-    image: "/images/food/seafood-paella.jpeg",
+    image: "/images/food/seafood-paella.jpg",
     category: "Main Course",
     nutritionalInfo: {
       calories: "520",
@@ -48,7 +48,7 @@ export const menuItems: MenuItem[] = [
     name: "Falafel Platter",
     description: "Handcrafted falafels served with hummus, pita, and tahini sauce",
     price: 18.99,
-    image: "/images/food/falafel-platter.jpeg",
+    image: "/images/food/falafel-platter.jpg",
     category: "Main Course",
     nutritionalInfo: {
       calories: "380",
