@@ -75,6 +75,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Check for required environment variables
     if (!process.env.STRIPE_SECRET_KEY) {
       console.error('STRIPE_SECRET_KEY is not defined');
       return NextResponse.json(
@@ -83,9 +84,19 @@ export async function POST(request: Request) {
       );
     }
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2023-10-16",
-    });
+    // Initialize Stripe with proper error handling
+    let stripe: Stripe;
+    try {
+      stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+        apiVersion: "2023-10-16",
+      });
+    } catch (error) {
+      console.error('Failed to initialize Stripe:', error);
+      return NextResponse.json(
+        { error: "Payment service initialization failed" },
+        { status: 500 }
+      );
+    }
 
     const body = await request.json();
     const validatedData = orderSchema.parse(body);
@@ -96,14 +107,23 @@ export async function POST(request: Request) {
       0
     );
 
-    // Create Stripe payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(total * 100), // Convert to cents
-      currency: "usd",
-      metadata: {
-        userId: session.user.id,
-      },
-    });
+    // Create Stripe payment intent with error handling
+    let paymentIntent;
+    try {
+      paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(total * 100), // Convert to cents
+        currency: "usd",
+        metadata: {
+          userId: session.user.id,
+        },
+      });
+    } catch (error) {
+      console.error('Failed to create payment intent:', error);
+      return NextResponse.json(
+        { error: "Failed to process payment" },
+        { status: 500 }
+      );
+    }
 
     // Create order in database
     const order = await prisma.order.create({
