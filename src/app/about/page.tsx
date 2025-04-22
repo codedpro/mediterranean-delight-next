@@ -5,161 +5,86 @@ import Link from "next/link";
 
 const teamMembers = [
   {
-    name: "Chef Ahmed Hassan",
-    role: "Executive Chef",
-    bio: "With over 20 years of experience in Mediterranean cuisine, Chef Ahmed brings authentic flavors and innovative techniques to our kitchen.",
+    name: "Chef Ahmed",
+    role: "Head Chef",
     image: "/images/staff/chef-ahmed.jpg",
+    bio: "With over 20 years of experience in Mediterranean cuisine, Chef Ahmed brings authentic flavors to every dish.",
   },
   {
     name: "Maria Rodriguez",
-    role: "Restaurant Manager",
-    bio: "Maria ensures every guest receives exceptional service and a memorable dining experience.",
+    role: "Sous Chef",
     image: "/images/staff/maria-rodriquez.jpg",
+    bio: "Maria specializes in Spanish and Greek dishes, bringing her passion for Mediterranean cooking to our kitchen.",
   },
   {
     name: "Sofia Papadopoulos",
     role: "Pastry Chef",
-    bio: "Sofia's expertise in Mediterranean desserts brings the perfect sweet ending to every meal.",
     image: "/images/staff/sofia-papadopoulos.jpg",
+    bio: "Sofia creates our delicious desserts, from traditional baklava to modern Mediterranean-inspired sweets.",
   },
 ];
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <div 
-        className="relative h-[40vh] min-h-[300px] bg-cover bg-no-repeat"
-        style={{ 
-          backgroundImage: "url('/images/hero/about-hero.jpeg')",
-          backgroundPosition: "center 60%"
-        }}
-      >
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white">About Us</h1>
+      <div className="relative h-[60vh]">
+        <Image
+          src="/images/hero/about-hero.jpg"
+          alt="Restaurant interior"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <h1 className="text-4xl md:text-6xl text-white font-bold">About Us</h1>
         </div>
       </div>
 
-      {/* Our Story Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold mb-6 text-gray-900">Our Journey</h2>
-              <p className="text-gray-600 mb-4">
-                Mediterranean Delight was born from a passion for authentic
-                Mediterranean cuisine and a desire to share the rich culinary
-                traditions of the region with our community. Founded in 2010 by
-                Chef Ahmed Hassan, our restaurant has become a beloved destination
-                for those seeking genuine Mediterranean flavors.
-              </p>
-              <p className="text-gray-600 mb-4">
-                Our journey began in a small kitchen in New York City, where Chef
-                Ahmed started experimenting with family recipes passed down through
-                generations. Today, we continue to honor these traditions while
-                embracing innovation in our culinary approach.
-              </p>
-              <p className="text-gray-600">
-                Every dish we serve tells a story - a story of heritage, passion,
-                and the joy of bringing people together through food.
-              </p>
-            </div>
-            <div className="relative h-[400px] rounded-lg overflow-hidden">
-              <Image
-                src="/images/restaurant/chef-cooking.jpg"
-                alt="Chef Cooking"
-                fill
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Restaurant Gallery */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">Our Space</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="relative h-[400px] rounded-lg overflow-hidden">
-              <Image
-                src="/images/restaurant/interior.jpg"
-                alt="Main Dining Area"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div className="relative h-[400px] rounded-lg overflow-hidden">
-              <Image
-                src="/images/restaurant/interior1.jpg"
-                alt="Private Dining Room"
-                fill
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Mission Section */}
-      <section className="py-16 bg-amber-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-gray-900">Our Mission</h2>
-            <p className="text-gray-600 max-w-3xl mx-auto">
-              To create an authentic Mediterranean dining experience that
-              celebrates the region's rich culinary heritage while fostering
-              community and connection through exceptional food and service.
+      {/* Story Section */}
+      <section className="py-16 px-4 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-3xl font-bold mb-6">Our Story</h2>
+            <p className="text-gray-600 mb-4">
+              Welcome to Mediterranean Delight, where we bring the authentic flavors of the Mediterranean to your table. Our restaurant is a celebration of the rich culinary traditions from countries like Greece, Turkey, Lebanon, and Morocco.
             </p>
+            <p className="text-gray-600 mb-4">
+              Founded in 2020, we&apos;ve been passionate about sharing the vibrant tastes and warm hospitality of the Mediterranean region with our community.
+            </p>
+            <Link href="/menu/" className="inline-block mt-4 px-6 py-3 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors">
+              View Our Menu
+            </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-semibold mb-3 text-gray-800">Authentic Flavors</h3>
-              <p className="text-gray-600">
-                We source the finest ingredients and stay true to traditional
-                recipes to bring you genuine Mediterranean flavors.
-              </p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-semibold mb-3 text-gray-800">Warm Hospitality</h3>
-              <p className="text-gray-600">
-                Our team is dedicated to providing exceptional service and creating
-                a welcoming atmosphere for every guest.
-              </p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-semibold mb-3 text-gray-800">Community Focus</h3>
-              <p className="text-gray-600">
-                We believe in giving back to our community and supporting local
-                farmers and producers.
-              </p>
-            </div>
+          <div className="relative h-[400px]">
+            <Image
+              src="/images/restaurant/interior.jpg"
+              alt="Restaurant interior"
+              fill
+              className="object-cover rounded-lg"
+            />
           </div>
         </div>
       </section>
 
-      {/* Our Team Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      {/* Team Section */}
+      <section className="py-16 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">Meet Our Team</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <h2 className="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
+          <div className="grid md:grid-cols-3 gap-8">
             {teamMembers.map((member) => (
-              <div
-                key={member.name}
-                className="bg-white rounded-lg shadow-lg overflow-hidden"
-              >
-                <div className="relative h-[300px] w-full">
+              <div key={member.name} className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="relative h-64">
                   <Image
                     src={member.image}
                     alt={member.name}
                     fill
-                    className="object-cover object-top"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover"
                   />
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-1 text-gray-800">{member.name}</h3>
-                  <p className="text-amber-600 font-medium mb-3">{member.role}</p>
+                  <h3 className="text-xl font-bold mb-2">{member.name}</h3>
+                  <p className="text-amber-600 mb-4">{member.role}</p>
                   <p className="text-gray-600">{member.bio}</p>
                 </div>
               </div>
@@ -168,28 +93,30 @@ export default function About() {
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="bg-amber-600 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Experience Mediterranean Delight
-          </h2>
-          <p className="text-xl text-amber-100 mb-8">
-            Join us for an unforgettable dining experience
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/reservations"
-              className="bg-white hover:bg-gray-100 text-amber-600 px-6 py-3 rounded-md text-lg font-medium transition-colors"
-            >
-              Book a Table
-            </a>
-            <a
-              href="/menu"
-              className="bg-amber-700 hover:bg-amber-800 text-white px-6 py-3 rounded-md text-lg font-medium transition-colors"
-            >
-              View Menu
-            </a>
+      {/* Location Section */}
+      <section className="py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">Visit Us</h2>
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h3 className="text-2xl font-bold mb-4">Location</h3>
+              <p className="text-gray-600 mb-4">
+                123 Mediterranean Street<br />
+                San Francisco, CA 94105
+              </p>
+              <h3 className="text-2xl font-bold mb-4">Hours</h3>
+              <p className="text-gray-600 mb-2">Monday - Thursday: 11:00 AM - 10:00 PM</p>
+              <p className="text-gray-600 mb-2">Friday - Saturday: 11:00 AM - 11:00 PM</p>
+              <p className="text-gray-600">Sunday: 10:00 AM - 9:00 PM</p>
+            </div>
+            <div className="relative h-[400px]">
+              <Image
+                src="/images/restaurant/interior1.jpg"
+                alt="Restaurant interior"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
           </div>
         </div>
       </section>

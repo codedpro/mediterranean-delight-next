@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { format } from "date-fns";
 import { sendReservationStatusEmail } from "@/lib/email";
 
 const updateReservationSchema = z.object({

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 
 interface Reservation {
@@ -19,7 +18,6 @@ interface Reservation {
 
 export default function ReservationDashboard() {
   const { data: session } = useSession();
-  const router = useRouter();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(
     format(new Date(), "yyyy-MM-dd")
