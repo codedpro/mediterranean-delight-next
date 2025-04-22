@@ -30,7 +30,7 @@ export default function About() {
       {/* Hero Section */}
       <section 
         className="relative h-[60vh] md:h-[70vh] w-full bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/images/hero/about-hero.jpg')" }}
+        style={{ backgroundImage: "url('/images/hero/about-hero.jpeg')" }}
       >
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
           <h1 className="text-4xl md:text-6xl text-white font-bold">About Us</h1>
