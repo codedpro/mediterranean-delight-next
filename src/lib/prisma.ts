@@ -1,25 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 
 declare global {
-  var prisma: PrismaClient | undefined;
+  let prisma: PrismaClient | undefined;
 }
 
-let prisma: PrismaClient;
+const prisma = global.prisma || new PrismaClient({
+  log: ["query", "error", "warn"],
+});
 
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
-} else {
-  if (!global.prisma) {
-    console.log("Creating new Prisma client instance");
-    console.log("MongoDB Connection URL (with password hidden):", 
-      process.env.DATABASE_URL?.replace(/mongodb\+srv:\/\/[^:]+:[^@]+@/, 'mongodb+srv://username:****@')
-    );
-    
-    global.prisma = new PrismaClient({
-      log: ["query", "error", "warn"],
-    });
-  }
-  prisma = global.prisma;
+if (process.env.NODE_ENV !== "production") {
+  global.prisma = prisma;
 }
 
 // Test the connection with detailed error logging

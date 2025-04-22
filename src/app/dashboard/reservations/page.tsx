@@ -29,13 +29,10 @@ export default function ReservationDashboard() {
   const [expandedReservations, setExpandedReservations] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (!session) {
-      router.push("/auth/signin");
-      return;
+    if (session?.user) {
+      fetchReservations();
     }
-
-    fetchReservations();
-  }, [session, selectedDate]);
+  }, [session?.user, fetchReservations, router]);
 
   const fetchReservations = async () => {
     try {
