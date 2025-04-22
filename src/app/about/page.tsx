@@ -28,18 +28,14 @@ export default function About() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative h-[60vh]">
-        <Image
-          src="/images/hero/about-hero.jpeg"
-          alt="Restaurant interior"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <section 
+        className="relative h-[60vh] md:h-[70vh] w-full bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/images/hero/about-hero.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
           <h1 className="text-4xl md:text-6xl text-white font-bold">About Us</h1>
         </div>
-      </div>
+      </section>
 
       {/* Story Section */}
       <section className="py-16 px-4 max-w-7xl mx-auto">
