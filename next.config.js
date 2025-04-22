@@ -3,9 +3,6 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
   },
-  experimental: {
-    optimizeCss: true,
-  },
   eslint: {
     ignoreDuringBuilds: true,
   },
