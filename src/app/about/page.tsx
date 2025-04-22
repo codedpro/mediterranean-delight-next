@@ -33,7 +33,7 @@ export default function About() {
         style={{ backgroundImage: "url('/images/hero/about-hero.jpeg')" }}
       >
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-          <h1 className="text-4xl md:text-6xl text-white font-bold">About Us</h1>
+          <h1 className="text-4xl md:text-6xl text-white font-bold">About Our Mediterranean Journey</h1>
         </div>
       </section>
 
