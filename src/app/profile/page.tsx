@@ -9,9 +9,8 @@ interface Reservation {
   id: string;
   date: string;
   time: string;
-  partySize: number;
+  guests: number;
   status: string;
-  specialRequests?: string;
 }
 
 export default function Profile() {
@@ -26,26 +25,23 @@ export default function Profile() {
       return;
     }
 
-    fetchReservations();
-  }, [session]);
+    const fetchReservations = async () => {
+      try {
+        const response = await fetch("/api/reservations/user");
+        if (!response.ok) throw new Error("Failed to fetch reservations");
+        const data = await response.json();
+        setReservations(data);
+      } catch (error) {
+        console.error("Error fetching reservations:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const fetchReservations = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/reservations/user");
-      if (!response.ok) throw new Error("Failed to fetch reservations");
-      const data = await response.json();
-      setReservations(data);
-    } catch (error) {
-      console.error("Error fetching reservations:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    fetchReservations();
+  }, [session, router]);
 
   const cancelReservation = async (id: string) => {
-    if (!confirm("Are you sure you want to cancel this reservation?")) return;
-
     try {
       const response = await fetch(`/api/reservations/${id}`, {
         method: "PATCH",
@@ -56,79 +52,78 @@ export default function Profile() {
       });
 
       if (!response.ok) throw new Error("Failed to cancel reservation");
-      fetchReservations(); // Refresh the list
+
+      // Update local state
+      setReservations((prev) =>
+        prev.map((res) =>
+          res.id === id ? { ...res, status: "cancelled" } : res
+        )
+      );
     } catch (error) {
       console.error("Error cancelling reservation:", error);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
-      </div>
-    );
+  if (!session) {
+    return null;
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="px-4 py-5 sm:px-6">
-            <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-            <p className="mt-1 text-sm text-gray-500">
-              Welcome back, {session?.user?.name}
-            </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white shadow rounded-lg p-6 mb-8">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+              Welcome, {session.user?.name}!
+            </h1>
+            <p className="text-gray-600">{session.user?.email}</p>
           </div>
 
-          <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">My Reservations</h2>
-            {reservations.length === 0 ? (
-              <p className="text-gray-500">You have no reservations yet.</p>
+          <div className="bg-white shadow rounded-lg p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Your Reservations
+            </h2>
+            {isLoading ? (
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
+              </div>
+            ) : reservations.length === 0 ? (
+              <p className="text-gray-600">You have no reservations yet.</p>
             ) : (
               <div className="space-y-4">
                 {reservations.map((reservation) => (
                   <div
                     key={reservation.id}
-                    className="border border-gray-200 rounded-lg p-4"
+                    className="border rounded-lg p-4 flex justify-between items-center"
                   >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {format(new Date(reservation.date), "MMMM d, yyyy")} at{" "}
-                          {reservation.time}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Party of {reservation.partySize}
-                        </p>
-                        {reservation.specialRequests && (
-                          <p className="text-sm text-gray-500 mt-1">
-                            Special Requests: {reservation.specialRequests}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            reservation.status === "confirmed"
-                              ? "bg-green-100 text-green-800"
-                              : reservation.status === "cancelled"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {reservation.status}
-                        </span>
-                        {reservation.status !== "cancelled" && (
-                          <button
-                            onClick={() => cancelReservation(reservation.id)}
-                            className="text-sm text-red-600 hover:text-red-500"
-                          >
-                            Cancel
-                          </button>
-                        )}
-                      </div>
+                    <div>
+                      <p className="font-medium">
+                        {format(new Date(reservation.date), "MMMM d, yyyy")}
+                      </p>
+                      <p className="text-gray-600">
+                        {reservation.time} - {reservation.guests} guests
+                      </p>
+                      <p
+                        className={`text-sm ${
+                          reservation.status === "confirmed"
+                            ? "text-green-600"
+                            : reservation.status === "cancelled"
+                            ? "text-red-600"
+                            : "text-yellow-600"
+                        }`}
+                      >
+                        {reservation.status.charAt(0).toUpperCase() +
+                          reservation.status.slice(1)}
+                      </p>
                     </div>
+                    {reservation.status !== "cancelled" && (
+                      <button
+                        onClick={() => cancelReservation(reservation.id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        Cancel
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
