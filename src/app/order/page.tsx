@@ -1,138 +1,179 @@
 "use client";
 
 import { useOrder } from "@/context/OrderContext";
-import Image from "next/image";
-import Link from "next/link";
-import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { loadStripe } from "@stripe/stripe-js";
 
-export default function Order() {
-  const { orderItems, updateQuantity, removeFromOrder, totalPrice } = useOrder();
-  const { data: session } = useSession();
+// Initialize Stripe
+let stripePromise: Promise<any> | null = null;
+const getStripe = () => {
+  if (!stripePromise) {
+    const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLIC_KEY;
+    if (!stripeKey) {
+      console.error("Stripe public key is not defined");
+      return null;
+    }
+    stripePromise = loadStripe(stripeKey);
+  }
+  return stripePromise;
+};
+
+export default function OrderPage() {
+  const { orderItems, totalPrice, removeFromOrder, updateQuantity } = useOrder();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCheckout = async () => {
-    if (!session) {
-      await signIn(undefined, { callbackUrl: "/order" });
-      return;
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      if (!orderItems.length) {
+        throw new Error("Your order is empty");
+      }
+
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: orderItems,
+          total: totalPrice,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create checkout session");
+      }
+
+      if (!data.sessionId) {
+        throw new Error("No session ID received");
+      }
+
+      const stripe = await getStripe();
+      
+      if (!stripe) {
+        throw new Error("Failed to initialize Stripe");
+      }
+
+      const { error: stripeError } = await stripe.redirectToCheckout({ 
+        sessionId: data.sessionId 
+      });
+      
+      if (stripeError) {
+        throw stripeError;
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      setError(error instanceof Error ? error.message : "An error occurred during checkout");
+    } finally {
+      setIsLoading(false);
     }
-    // TODO: Implement checkout process
-    console.log("Proceeding to checkout...");
   };
 
-  return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-amber-50 py-24">
+  if (orderItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-amber-900">Your Order</h1>
-            <div className="mt-6 max-w-3xl mx-auto">
-              <p className="text-lg text-amber-800">
-                {session ? (
-                  "You're all set to proceed with your order. Review your items below and click 'Proceed to Checkout' when ready."
-                ) : (
-                  <>
-                    To complete your order, you'll need to{" "}
-                    <span className="font-semibold">sign in</span> first. Don't worry, your items will be saved.
-                  </>
-                )}
-              </p>
-              <div className="mt-4 text-sm text-amber-700">
-                <p>• Your order will be saved for 24 hours</p>
-                <p>• You can modify quantities or remove items</p>
-                <p>• Secure payment processing available</p>
-              </div>
-            </div>
+            <h2 className="text-3xl font-bold text-gray-900">Your Order is Empty</h2>
+            <p className="mt-2 text-gray-600">
+              Add some delicious items from our menu to get started!
+            </p>
+            <button
+              onClick={() => router.push("/menu")}
+              className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700"
+            >
+              View Menu
+            </button>
           </div>
         </div>
-      </section>
+      </div>
+    );
+  }
 
-      {/* Order Content */}
-      <div className="bg-gray-50 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {orderItems.length === 0 ? (
-            <div className="text-center">
-              <p className="text-lg text-gray-600">Your order is empty</p>
-              <Link
-                href="/menu"
-                className="mt-6 inline-block bg-amber-600 text-white px-6 py-3 rounded-md hover:bg-amber-700 transition-colors"
-              >
-                Browse Menu
-              </Link>
-            </div>
-          ) : (
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="divide-y divide-gray-200">
-                {orderItems.map((item) => (
-                  <div key={item.id} className="p-6 flex items-center">
-                    <div className="relative h-24 w-24 flex-shrink-0">
-                      <Image
+  return (
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+          <div className="px-4 py-5 sm:px-6">
+            <h2 className="text-2xl font-bold text-gray-900">Your Order</h2>
+          </div>
+          <div className="border-t border-gray-200">
+            <ul className="divide-y divide-gray-200">
+              {orderItems.map((item) => (
+                <li key={item.id} className="px-4 py-4 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <img
                         src={item.image}
                         alt={item.name}
-                        fill
-                        className="object-cover rounded-md"
+                        className="h-16 w-16 object-cover rounded-md"
                       />
-                    </div>
-                    <div className="ml-6 flex-grow">
-                      <h3 className="text-lg font-medium text-gray-900">
-                        {item.name}
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {item.description}
-                      </p>
-                      <div className="mt-2 flex items-center justify-between">
-                        <div className="flex items-center">
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="text-gray-500 hover:text-gray-700"
-                          >
-                            -
-                          </button>
-                          <span className="mx-2 text-gray-700">{item.quantity}</span>
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="text-gray-500 hover:text-gray-700"
-                          >
-                            +
-                          </button>
-                        </div>
-                        <div className="flex items-center">
-                          <span className="text-amber-600 font-semibold">
-                            ${(item.price * item.quantity).toFixed(2)}
-                          </span>
-                          <button
-                            onClick={() => removeFromOrder(item.id)}
-                            className="ml-4 text-red-600 hover:text-red-800"
-                          >
-                            Remove
-                          </button>
-                        </div>
+                      <div className="ml-4">
+                        <h3 className="text-lg font-medium text-gray-900">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-gray-500">${item.price}</p>
                       </div>
                     </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          -
+                        </button>
+                        <span className="text-gray-900">{item.quantity}</span>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <button
+                        onClick={() => removeFromOrder(item.id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
-                ))}
-              </div>
-              
-              <div className="p-6 bg-gray-50 border-t border-gray-200">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-lg font-medium text-gray-900">Total</p>
-                    <p className="text-sm text-gray-500">Including tax</p>
-                  </div>
-                  <div className="text-2xl font-bold text-amber-600">
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="px-4 py-5 sm:px-6 border-t border-gray-200">
+            <div className="flex flex-col space-y-4">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                  {error}
+                </div>
+              )}
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900">Total</h3>
+                  <p className="text-2xl font-bold text-gray-900">
                     ${totalPrice.toFixed(2)}
-                  </div>
+                  </p>
                 </div>
                 <button
                   onClick={handleCheckout}
-                  className="mt-6 w-full bg-amber-600 text-white px-6 py-3 rounded-md hover:bg-amber-700 transition-colors"
+                  disabled={isLoading}
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50"
                 >
-                  {session ? "Proceed to Checkout" : "Sign in to Checkout"}
+                  {isLoading ? "Processing..." : "Proceed to Checkout"}
                 </button>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

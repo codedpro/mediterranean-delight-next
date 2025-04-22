@@ -43,7 +43,7 @@ model Order {
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
   total     Float
-  status    String      @default("pending")
+  status    OrderStatus @default(PENDING)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 }
@@ -66,7 +66,7 @@ model Reservation {
   date      DateTime
   time      String
   guests    Int
-  status    String   @default("pending")
+  status    ReservationStatus @default(PENDING)
   userId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())

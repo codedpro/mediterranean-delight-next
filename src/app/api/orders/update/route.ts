@@ -2,13 +2,25 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+import { OrderStatus } from "@prisma/client";
 
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id) {
+    if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Get user from database to ensure we have the correct ID
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session.user.email!,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const { items } = await request.json();
@@ -22,17 +34,17 @@ export async function POST(request: Request) {
     // Find or create order
     let order = await prisma.order.findFirst({
       where: {
-        userId: session.user.id,
-        status: "pending",
+        userId: user.id,
+        status: OrderStatus.PENDING,
       },
     });
 
     if (!order) {
       order = await prisma.order.create({
         data: {
-          userId: session.user.id,
+          userId: user.id,
           total,
-          status: "pending",
+          status: OrderStatus.PENDING,
         },
       });
     } else {
