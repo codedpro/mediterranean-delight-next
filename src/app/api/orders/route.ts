@@ -3,9 +3,32 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import Stripe from "stripe";
+import { z } from "zod";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2023-10-16",
+});
+
+interface OrderItem {
+  menuItemId: string;
+  quantity: number;
+  price: number;
+}
+
+interface OrderData {
+  items: OrderItem[];
+  total: number;
+}
+
+const orderSchema = z.object({
+  items: z.array(
+    z.object({
+      menuItemId: z.string(),
+      quantity: z.number().min(1),
+      price: z.number().min(0),
+    })
+  ),
+  total: z.number().min(0),
 });
 
 export async function GET() {
@@ -57,10 +80,10 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { items } = body;
+    const validatedData = orderSchema.parse(body);
 
     // Calculate total
-    const total = items.reduce(
+    const total = validatedData.items.reduce(
       (sum: number, item: any) => sum + item.price * item.quantity,
       0
     );
@@ -80,7 +103,7 @@ export async function POST(request: Request) {
         userId: session.user.id,
         total,
         items: {
-          create: items.map((item: any) => ({
+          create: validatedData.items.map((item) => ({
             menuItemId: item.menuItemId,
             quantity: item.quantity,
             price: item.price,
@@ -101,6 +124,13 @@ export async function POST(request: Request) {
       clientSecret: paymentIntent.client_secret,
     });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Invalid request data" },
+        { status: 400 }
+      );
+    }
+
     console.error("Error creating order:", error);
     return NextResponse.json(
       { error: "Failed to create order" },

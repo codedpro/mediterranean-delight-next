@@ -8,60 +8,43 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 export async function POST(request: Request) {
-  const body = await request.text();
-  const signature = headers().get("Stripe-Signature")!;
-
-  let event: Stripe.Event;
-
   try {
-    event = stripe.webhooks.constructEvent(
+    const body = await request.text();
+    const signature = headers().get("stripe-signature");
+
+    if (!signature) {
+      return NextResponse.json(
+        { error: "Missing stripe signature" },
+        { status: 400 }
+      );
+    }
+
+    const event = stripe.webhooks.constructEvent(
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Webhook signature verification failed" },
-      { status: 400 }
-    );
-  }
 
-  switch (event.type) {
-    case "payment_intent.succeeded":
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      const userId = paymentIntent.metadata.userId;
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
 
       // Update order status
-      await prisma.order.updateMany({
+      await prisma.order.update({
         where: {
-          userId,
-          status: "PENDING",
+          id: session.metadata?.orderId,
         },
         data: {
           status: "CONFIRMED",
         },
       });
-      break;
+    }
 
-    case "payment_intent.payment_failed":
-      const failedPaymentIntent = event.data.object as Stripe.PaymentIntent;
-      const failedUserId = failedPaymentIntent.metadata.userId;
-
-      // Update order status to cancelled
-      await prisma.order.updateMany({
-        where: {
-          userId: failedUserId,
-          status: "PENDING",
-        },
-        data: {
-          status: "CANCELLED",
-        },
-      });
-      break;
-
-    default:
-      console.log(`Unhandled event type ${event.type}`);
+    return NextResponse.json({ received: true });
+  } catch (error) {
+    console.error("Stripe webhook error:", error);
+    return NextResponse.json(
+      { error: "Webhook error" },
+      { status: 400 }
+    );
   }
-
-  return NextResponse.json({ received: true });
 } 

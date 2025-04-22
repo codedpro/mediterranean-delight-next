@@ -48,12 +48,9 @@ export async function POST(request: Request) {
     console.log("User created:", user);
 
     // Remove password from response
-    const { password, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user;
 
-    return NextResponse.json(
-      { message: "User created successfully", user: userWithoutPassword },
-      { status: 201 }
-    );
+    return NextResponse.json(userWithoutPassword, { status: 201 });
   } catch (error) {
     console.error("Registration error details:", error);
 
