@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
@@ -28,13 +28,7 @@ export default function ReservationDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedReservations, setExpandedReservations] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    if (session?.user) {
-      fetchReservations();
-    }
-  }, [session?.user, fetchReservations, router]);
-
-  const fetchReservations = async () => {
+  const fetchReservations = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch(
@@ -48,7 +42,13 @@ export default function ReservationDashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (session?.user) {
+      fetchReservations();
+    }
+  }, [session?.user, fetchReservations]);
 
   const updateReservationStatus = async (id: string, status: string) => {
     try {

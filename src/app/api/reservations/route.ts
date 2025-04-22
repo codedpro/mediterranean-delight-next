@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { sendReservationStatusEmail } from "@/lib/email";
 import { format } from "date-fns";
@@ -19,9 +19,11 @@ const reservationSchema = z.object({
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    const body = await req.json();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    // Validate request body
+    const body = await req.json();
     const validatedData = reservationSchema.parse(body);
 
     // Check for existing reservations at the same time
@@ -47,15 +49,15 @@ export async function POST(req: Request) {
       data: {
         ...validatedData,
         date: new Date(validatedData.date),
-        userId: session?.user?.id,
+        userId: session.user.id,
       },
     });
 
     // Send confirmation email
     try {
       await sendReservationStatusEmail(
-        reservation.email,
-        reservation.name,
+        session.user.email!,
+        session.user.name!,
         format(reservation.date, "MMMM d, yyyy"),
         reservation.time,
         "pending"
