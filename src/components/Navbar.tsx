@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
+import { useOrder } from "@/context/OrderContext";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -11,6 +12,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const { totalItems = 0 } = useOrder() || {};
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,30 +62,43 @@ const Navbar = () => {
               ))}
             </div>
           </div>
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            {session ? (
-              <div className="flex items-center space-x-4">
-                <Link
-                  href="/dashboard"
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  Dashboard
-                </Link>
+          <div className="flex items-center space-x-4">
+            <Link
+              href="/order"
+              className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700"
+            >
+              Your Order
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+            <div className="hidden sm:ml-6 sm:flex sm:items-center">
+              {session ? (
+                <div className="flex items-center space-x-4">
+                  <Link
+                    href="/dashboard"
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={() => signOut()}
+                    className="bg-amber-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-amber-700"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
                 <button
-                  onClick={() => signOut()}
+                  onClick={() => signIn()}
                   className="bg-amber-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-amber-700"
                 >
-                  Sign Out
+                  Sign In
                 </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => signIn()}
-                className="bg-amber-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-amber-700"
-              >
-                Sign In
-              </button>
-            )}
+              )}
+            </div>
           </div>
           <div className="-mr-2 flex items-center sm:hidden">
             <button
@@ -141,36 +156,49 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
-          {session ? (
-            <>
-              <Link
-                href="/dashboard"
-                onClick={() => setIsMenuOpen(false)}
-                className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
-              >
-                Dashboard
-              </Link>
+          <div className="flex items-center space-x-4">
+            <Link
+              href="/order"
+              className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700"
+            >
+              Your Order
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+            {session ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    signOut();
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
               <button
                 onClick={() => {
-                  signOut();
+                  signIn();
                   setIsMenuOpen(false);
                 }}
                 className="block w-full text-left pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
               >
-                Sign Out
+                Sign In
               </button>
-            </>
-          ) : (
-            <button
-              onClick={() => {
-                signIn();
-                setIsMenuOpen(false);
-              }}
-              className="block w-full text-left pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
-            >
-              Sign In
-            </button>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </nav>

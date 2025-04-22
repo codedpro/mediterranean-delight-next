@@ -19,7 +19,7 @@ export default function Reservations() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session) {
-      router.push("/auth/signin");
+      router.push("/auth/signin?callbackUrl=/reservations");
       return;
     }
     setIsLoading(true);
@@ -57,8 +57,12 @@ export default function Reservations() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section 
-        className="relative h-[40vh] w-full bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/images/hero/reservation-hero.jpeg')" }}
+        className="relative h-[70vh] w-full bg-cover bg-center bg-no-repeat"
+        style={{ 
+          backgroundImage: "url('/images/hero/reservation-hero.jpeg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center"
+        }}
       >
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
           <h1 className="text-4xl md:text-6xl text-white font-bold">Make a Reservation</h1>
@@ -70,7 +74,7 @@ export default function Reservations() {
         <div className="grid md:grid-cols-2 gap-12">
           {/* Reservation Form */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Book Your Table</h2>
+            <h2 className="text-2xl font-bold text-gray-700 mb-6">Book Your Table</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
@@ -176,9 +180,9 @@ export default function Reservations() {
           {/* Policies Section */}
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Reservation Policy</h2>
+              <h2 className="text-2xl font-bold text-gray-700 mb-4">Reservation Policy</h2>
               <div className="prose prose-amber">
-                <ul className="list-disc pl-5 space-y-2 text-gray-600">
+                <ul className="list-disc pl-5 space-y-2 text-gray-500">
                   <li>Reservations can be made up to 30 days in advance</li>
                   <li>We hold tables for 15 minutes after the reservation time</li>
                   <li>For parties of 8 or more, please call us directly</li>
@@ -189,9 +193,9 @@ export default function Reservations() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Cancellation Policy</h2>
+              <h2 className="text-2xl font-bold text-gray-700 mb-4">Cancellation Policy</h2>
               <div className="prose prose-amber">
-                <ul className="list-disc pl-5 space-y-2 text-gray-600">
+                <ul className="list-disc pl-5 space-y-2 text-gray-500">
                   <li>Cancellations must be made at least 24 hours in advance</li>
                   <li>Late cancellations may result in a cancellation fee</li>
                   <li>For large party cancellations, please call us directly</li>
@@ -207,7 +211,7 @@ export default function Reservations() {
                 If you need to modify your existing reservation, please visit your dashboard or contact us directly.
               </p>
               <Link
-                href="/dashboard/reservations"
+                href={session ? "/dashboard/reservations" : "/auth/signin?callbackUrl=/dashboard/reservations"}
                 className="inline-block bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700 transition-colors"
               >
                 View My Reservations
