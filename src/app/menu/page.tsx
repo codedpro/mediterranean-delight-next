@@ -24,7 +24,7 @@ export default function Menu() {
           <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">
             Our Menu
           </h1>
-          <p className="mt-4 text-xl text-gray-600">
+          <p className="mt-4 text-xl text-gray-700">
             Discover our authentic Mediterranean dishes
           </p>
         </div>
@@ -66,7 +66,7 @@ export default function Menu() {
                 <h3 className="text-lg font-semibold text-gray-900">
                   {item.name}
                 </h3>
-                <p className="mt-1 text-sm text-gray-600 line-clamp-2">
+                <p className="mt-1 text-sm text-gray-700 line-clamp-2">
                   {item.description}
                 </p>
                 <div className="mt-4 flex justify-between items-center">

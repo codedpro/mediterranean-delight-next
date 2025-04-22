@@ -99,7 +99,7 @@ export default function MenuItemDetails() {
               <h1 className="mt-2 text-3xl font-extrabold text-gray-900">
                 {menuItem.name}
               </h1>
-              <p className="mt-3 text-lg text-gray-600">{menuItem.description}</p>
+              <p className="mt-3 text-lg text-gray-700">{menuItem.description}</p>
               <div className="mt-4">
                 <span className="text-2xl font-bold text-gray-900">
                   ${menuItem.price}
@@ -112,7 +112,7 @@ export default function MenuItemDetails() {
                   </h2>
                   <div className="mt-2 grid grid-cols-2 gap-4">
                     {Object.entries(menuItem.nutritionalInfo).map(([key, value]) => (
-                      <div key={key} className="text-sm text-gray-600">
+                      <div key={key} className="text-sm text-gray-700">
                         <span className="font-medium">{key}:</span> {value}
                       </div>
                     ))}
@@ -147,7 +147,7 @@ export default function MenuItemDetails() {
                     <h3 className="text-lg font-semibold text-gray-900">
                       {item.name}
                     </h3>
-                    <p className="mt-1 text-sm text-gray-600 line-clamp-2">
+                    <p className="mt-1 text-sm text-gray-700 line-clamp-2">
                       {item.description}
                     </p>
                     <p className="mt-2 text-amber-600 font-semibold">
