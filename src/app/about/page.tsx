@@ -70,7 +70,7 @@ export default function About() {
           <div className="grid md:grid-cols-3 gap-8">
             {teamMembers.map((member) => (
               <div key={member.name} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="relative h-64">
+                <div className="relative h-80">
                   <Image
                     src={member.image}
                     alt={member.name}
