@@ -5,9 +5,13 @@ import { authOptions } from "../auth/[...nextauth]/route";
 import Stripe from "stripe";
 import { z } from "zod";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: "2023-10-16",
 });
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.error('STRIPE_SECRET_KEY is not defined');
+}
 
 interface OrderItem {
   menuItemId: string;
