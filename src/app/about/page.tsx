@@ -66,7 +66,7 @@ export default function About() {
       {/* Team Section */}
       <section className="py-16 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">Meet Our Team</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {teamMembers.map((member) => (
               <div key={member.name} className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -75,7 +75,7 @@ export default function About() {
                     src={member.image}
                     alt={member.name}
                     fill
-                    className="object-cover"
+                    className="object-cover object-top"
                   />
                 </div>
                 <div className="p-6">
