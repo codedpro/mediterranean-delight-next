@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [],
+    unoptimized: false,
+  },
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ["@heroicons/react"],
+  },
 };
 
 export default nextConfig;
