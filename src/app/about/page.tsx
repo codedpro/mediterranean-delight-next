@@ -30,7 +30,7 @@ export default function About() {
       {/* Hero Section */}
       <div className="relative h-[60vh]">
         <Image
-          src="/images/hero/about-hero.jpg"
+          src="/images/hero/about-hero.jpeg"
           alt="Restaurant interior"
           fill
           className="object-cover"
