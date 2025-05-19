@@ -1,147 +1,108 @@
-# Mediterranean Delight Restaurant Website
+# Mediterranean Delight 🍽️
 
-A modern, full-stack restaurant website built with Next.js, MongoDB, and NextAuth.js. This project features a complete restaurant management system including menu management, reservations, and user authentication.
+**Mediterranean Delight** is a full-featured restaurant website showcasing authentic Mediterranean cuisine. Built with Next.js 15, it offers an interactive menu, reservation system, and online ordering capabilities, providing a seamless experience for customers.
 
-## Features
+🌐 Live Preview: [mediterranean-delight-next.vercel.app](https://mediterranean-delight-next.vercel.app/)
 
-- 🍽️ **Menu Management**
-  - Browse menu items by categories
-  - Detailed item descriptions and images
-  - Real-time availability updates
+---
 
-- 📅 **Reservation System**
-  - Online table reservations
-  - Email notifications for reservation status
-  - User dashboard for managing reservations
+## 🚀 Features
 
-- 👤 **User Authentication**
-  - Secure login and registration
-  - Google OAuth integration
-  - User profiles and order history
+- **Interactive Menu**: Browse signature dishes with detailed descriptions and pricing.
+- **Reservation System**: Book tables directly through the website.
+- **Online Ordering**: Secure checkout powered by Stripe.
+- **Authentication**: User login and registration with NextAuth.
+- **Responsive Design**: Optimized for all devices.
+- **SEO Friendly**: Enhanced visibility on search engines.
 
-- 💳 **Payment Integration**
-  - Stripe payment processing
-  - Secure checkout system
-  - Order tracking
+---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**
-  - Next.js 14
-  - TypeScript
-  - Tailwind CSS
-  - React Hook Form
-  - Zod Validation
+- **Framework**: Next.js 15.3.1
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **Database ORM**: Prisma 6.6.0
+- **Authentication**: NextAuth
+- **Payment Processing**: Stripe
+- **Form Handling**: React Hook Form, Zod, @hookform/resolvers
+- **Email Services**: Nodemailer
+- **Date Utilities**: date-fns
 
-- **Backend**
-  - Next.js API Routes
-  - MongoDB with Prisma
-  - NextAuth.js
-  - Nodemailer for emails
+---
 
-- **Authentication**
-  - NextAuth.js
-  - Google OAuth
-  - JWT tokens
+## 📦 Installation
 
-- **Database**
-  - MongoDB Atlas
-  - Prisma ORM
+1. **Clone the repository**:
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ installed
-- MongoDB Atlas account
-- Google OAuth credentials (optional)
-- Stripe account (optional)
-
-### Installation
-
-1. Clone the repository:
    ```bash
-   git clone https://github.com/roddazad/mediterranean-delight-next.git
+   git clone https://github.com/codedpro/mediterranean-delight-next.git
    cd mediterranean-delight-next
    ```
 
-2. Install dependencies:
+2. **Install dependencies**:
+
    ```bash
    npm install
+   # or
+   yarn install
    ```
 
-3. Set up environment variables:
-   - Copy `.env.example` to `.env.local`
-   - Fill in your environment variables:
-     - MongoDB connection string
-     - NextAuth secret
-     - Google OAuth credentials (if using)
-     - Stripe keys (if using)
+3. **Set up environment variables**:
 
-4. Set up the database:
+   Create a `.env.local` file and add the necessary environment variables as specified in `.env.example`.
+
+4. **Generate Prisma client**:
+
    ```bash
    npx prisma generate
    ```
 
-5. Run the development server:
+5. **Run the development server**:
+
    ```bash
    npm run dev
+   # or
+   yarn dev
    ```
 
-The application will be available at `http://localhost:3000`
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Environment Variables
+---
 
-Create a `.env.local` file with the following variables:
+## 📁 Project Structure
 
-```env
-# Database
-DATABASE_URL="your-mongodb-connection-string"
-
-# NextAuth
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-nextauth-secret"
-
-# Google OAuth (optional)
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-
-# Stripe (optional)
-STRIPE_PUBLIC_KEY="your-stripe-public-key"
-STRIPE_SECRET_KEY="your-stripe-secret-key"
-STRIPE_WEBHOOK_SECRET="your-stripe-webhook-secret"
+```bash
+├── components/        # Reusable UI components
+├── pages/             # Next.js pages
+├── prisma/            # Prisma schema and migrations
+├── public/            # Static assets
+├── styles/            # Global styles and Tailwind configurations
+├── utils/             # Utility functions
+├── types/             # TypeScript type definitions
+├── .env.example       # Example environment variables
+├── tailwind.config.js # Tailwind CSS configuration
+└── package.json       # Project metadata and scripts
 ```
 
-## Project Structure
+---
 
-```
-mediterranean-delight-next/
-├── prisma/              # Database schema and migrations
-├── public/             # Static assets
-├── src/
-│   ├── app/           # Next.js app router pages
-│   ├── components/    # React components
-│   ├── lib/          # Utility functions and configurations
-│   └── data/         # Static data and constants
-├── .env.example      # Example environment variables
-└── package.json      # Project dependencies
-```
+## 🧪 Scripts
 
-## Contributing
+- `npm run dev` – Start the development server
+- `npm run build` – Build for production
+- `npm run start` – Start the production server
+- `npm run lint` – Run ESLint to analyze code quality
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+---
 
-## License
+## 🙌 Acknowledgments
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- [Next.js](https://nextjs.org/) – The React Framework
+- [Tailwind CSS](https://tailwindcss.com/) – Utility-first CSS framework
+- [Prisma](https://www.prisma.io/) – Next-generation ORM
+- [Stripe](https://stripe.com/) – Payment processing platform
+- [NextAuth](https://next-auth.js.org/) – Authentication for Next.js
+- [React Hook Form](https://react-hook-form.com/) – Form state management
+- [Zod](https://zod.dev/) – TypeScript-first schema validation
 
-## Acknowledgments
-
-- Next.js team for the amazing framework
-- Prisma team for the excellent ORM
-- MongoDB Atlas for the database hosting
-- All contributors and supporters of the project
